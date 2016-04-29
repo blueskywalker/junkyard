@@ -1,4 +1,4 @@
-package main;
+package org.blueskywalker.test;
 
 import java.util.ArrayList;
 import java.util.Iterator;
