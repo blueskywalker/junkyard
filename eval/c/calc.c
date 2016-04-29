@@ -19,7 +19,7 @@
 #include <stdarg.h>
 
 typedef enum {
-    PLUS,
+    ADD,
     MULTIPLY,
     SUBTRACT,
     DIVIDE,
@@ -174,7 +174,7 @@ void add_token(List *tokens,StringBuffer *buffer,Type type) {
             append(tokens,token);
         }
         break;
-    case PLUS:
+    case ADD:
         token.value.op = '+';
         append(tokens,token);
         break;
@@ -258,7 +258,7 @@ List * tokenizing(char *input) {
             break;
         case '+':
             add_token(tokens,&buffer,NUM);
-            add_token(tokens,NULL,PLUS);
+            add_token(tokens,NULL,ADD);
             break;
         case '-':
             add_token(tokens,&buffer,NUM);
@@ -339,7 +339,7 @@ Node *find_factor(List *list) {
             if(node==list->tail)
                 return node;
             break;
-        case PLUS:
+        case ADD:
         case SUBTRACT:
             break;
         case RPAREN:
@@ -371,7 +371,7 @@ Node *find_term(List *list) {
             if(node==list->tail)
                 return node;
             break;
-        case PLUS:
+        case ADD:
         case SUBTRACT:
             return node;
         case RPAREN:
@@ -485,7 +485,7 @@ int expr(List *tokens) {
     left.head=tokens->head;left.tail=node->prev;
     right.head=node->next;right.tail=tokens->tail;
 
-    if(node->token.type==PLUS) {
+    if(node->token.type==ADD) {
         return term(&left) + expr(&right);
     } else if (node->token.type==SUBTRACT) {
         return term(&left) - expr(&right);
