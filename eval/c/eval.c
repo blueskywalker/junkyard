@@ -31,21 +31,27 @@ int Strchar(String data, char ch) {
     return -1;
 }
 
+void syntax_error(int lineno) {
+    printf("SYNTAX ERRPR - %d\n",lineno);
+    exit(1);
+}
+
 int operator_match(String data,char *tokens) {
     int len=strlen(tokens);
     int index=0,i=0;
-    int NotInParen=1;
+    int in_paren=0;
 
     for(index=0;index<data.len;index++) {
-    	if(NotInParen && data.start[index]=='('){
-            NotInParen=0;
+    	if(data.start[index]=='('){
+            in_paren++;
             continue;
-    	} else if (!NotInParen && data.start[index]==')') {
-            NotInParen=1;
+    	} else if (in_paren>0 && data.start[index]==')') {
+            in_paren--;
             continue;
-    	}
+    	} else if (in_paren==0 && data.start[index]==')')
+            syntax_error(__LINE__);
 
-        for(i=0;NotInParen && i<len;i++) {
+        for(i=0;in_paren==0 && i<len;i++) {
             if (data.start[index] == tokens[i])
                 return index;
         }
@@ -54,11 +60,25 @@ int operator_match(String data,char *tokens) {
 }
 
 
-void syntax_error(int lineno) {
-    printf("SYNTAX ERRPR - %d\n",lineno);
-    exit(1);
-}
+int matched_parenthesis(String data) {
+    int i;
+    int paren=0;
 
+    for(i=0;i<data.len;i++) {
+    	if(data.start[i]=='('){
+            paren++;
+            continue;
+    	} else if (paren>0 && data.start[i]==')') {
+            paren--;
+            if (paren==0)
+                return i;
+            continue;
+    	} else if (paren==0 && data.start[i]==')')
+            syntax_error(__LINE__);
+    }
+
+    return -1;
+}
 
 void debug_print(char *prefix,String data) {
     char buffer[1024];
@@ -66,7 +86,7 @@ void debug_print(char *prefix,String data) {
     buffer[data.len]=0;
     printf("%s-%s\n",prefix,buffer);
 }
-
+#define DEBUG
 #ifdef DEBUG
 #define debugprint(P,S) debug_print(P,S)
 #else
@@ -113,14 +133,16 @@ int factor (String data) {
         return num(data);
     else {
         String subexpr;
-        subexpr.start = data.start+index+1;
-        subexpr.len = data.len - index -1;
-        index = Strchar(subexpr,')');
+        subexpr.start = data.start+index;
+        subexpr.len = data.len - index;
+
+        index = matched_parenthesis(subexpr);
 
         if (index==-1) {
             syntax_error(__LINE__);
         } else {
-            subexpr.len = index;
+            subexpr.start = subexpr.start + 1;
+            subexpr.len = index-1;
             return expr(subexpr);
         }
     }
@@ -182,7 +204,7 @@ int expr(String data) {
 
 int main(int argc,char *argv[])
 {
-    char *test_data=" 3 + 4 * 3 + (50 / 5 + 4) * 3 - 12 ";
+    char *test_data=" 3 + 4 * 3 + (45 / (5 + 4)) * 3 - 12 ";
 
     int result;
 
