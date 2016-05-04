@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="KafkaChart">
+
+<head>
+    <meta charset="utf-8">
+    <title>KAFKA PEFORMANCE CHART</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-animate.js"></script>
+    <script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-1.3.2.js"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="./bower_components/angular-ui-grid/ui-grid.js"></script>
+    <script src="kafkachart.js"></script>
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="./bower_components/angular-ui-grid/ui-grid.css">
+    <style>
+        .myGrid {
+            width: auto;
+            height: auto;
+
+          }
+        label {
+            color: dimgrey
+        }
+        body {
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+        select {
+            width: 150px;
+        }
+    </style>
+</head>
+<body ng-controller="source">
+    <h1><a href="oskafka_monitoring.html">PERFORMANCE CHART</a></h1>
+    <h4><label id="cluster">{{cluster}}</label> >
+        <label id="group">{{group}}</label> >
+        <label id="topic">{{topic}}</label>
+    </h4>
+
+    <div ng-controller="data">
+        <select id="period" ng-model="period" ng-options="range.value as range.text for range in ranges"
+                ng-change="change()">
+        </select>
+        <br><br>
+        <label class="info">Producer : {{producer}}/sec</label><br>
+        <label class="info">Consumer : {{consumer}}/sec</label>
+        <div id="container"></div>
+        <div id="grid" class="myGrid" ui-grid="{data : offsetData}"></div>
+
+    </div>
+</body>

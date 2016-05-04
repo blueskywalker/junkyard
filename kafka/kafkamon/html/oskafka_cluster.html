@@ -1,0 +1,151 @@
+<html>
+
+<head>
+    <title>OS KAFKA MONITORING</title>
+    <style>
+        h1 {
+            text-align: center;
+        }
+
+        .options {
+            display: table;
+            margin: 20px auto;
+        }
+    </style>
+    <script src="js/jquery.js"></script>
+    <script src="js/highcharts.js"></script>
+    <script lang="application/javascript">
+        var clusters = {}
+
+        function get_tables() {
+            $("#group").empty();
+            var cluster = $("#cluster").val();
+            console.log(cluster);
+            var tables = clusters[cluster];
+            if (tables.length == 0) {
+                var url = "get_groups.php?cluster=" + cluster;
+                console.log(url);
+                $.getJSON(url, function (data) {
+                    $.each(data, function (index, value) {
+                        $("#group").append($('<option/>', {
+                            value: value
+                            , text: value
+                        }))
+                        tables.push(value);
+                    })
+                });
+            } else {
+                $.each(tables, function (index, value) {
+                    $("#group").append($('<option/>', {
+                        value: value
+                        , text: value
+                    }))
+                });
+            }
+        }
+
+        function get_databases() {
+            $.getJSON('get_clusters.php', function (data) {
+                $.each(data, function (index, value) {
+                    var cluster = value.substring(6);
+                    $("#cluster").append($('<option/>', {
+                        value: cluster
+                        , text: cluster
+                    }))
+                    clusters[cluster] = new Array();
+                })
+            }).then(function () {
+                get_tables();
+            });
+        }
+    </script>
+</head>
+<div>
+    <h1>OS KAFKA MONITORING</h1></div>
+
+<body onload="get_databases()">
+    <div id="cluster-info" class="options">
+        Cluster:
+        <select id="cluster" onchange="get_tables()"></select>
+        &nbsp; Consumer group:
+        <select id="group"></select>
+        &nbsp; Time Period:
+        <select id='period'>
+            <option value=15>15 min</option>
+            <option value=30>30 min</option>
+            <option value=60>1 hour</option>
+            <option value=180>3 hours</option>
+            <option value=360>6 hours</option>
+            <option value=720>12 hours</option>
+            <option value=1440>1 day</option>
+            <option value=2880>2 days</option>
+            <option value=4320>3 days</option>
+            <option value=10080>1 week</option>
+        </select>
+        &nbsp;&nbsp;
+        <button onclick="getdata()">get data</button>
+    </div>
+    <div id="consumer-data" class="options">
+        Topic:
+        <select id="topic" disabled="disabled"></select>
+        &nbsp;&nbsp; Partitions:
+        <select id="partition" disabled="disabled"></select>
+        &nbsp;&nbsp;
+        <button onclick="draw()" disabled="disabled">draw chart</button>
+    </div>
+    <div>
+        <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+    </div>
+    <script>
+        var chart_data = {};
+
+        function get_topic() {
+            $("#topic").prop('disabled',false);
+            $("#topic").empty();
+            $.each(chart_data, function (data) {
+                $('#topic').append($('<option/>', {
+                    value: data
+                    , text: data
+                }));
+            });
+        }
+
+        function get_partition() {
+            $('#partition').prop('disabled',false);
+            $("#partition").empty();
+            var topic = $("#topic").val();
+
+            $.each(chart_data[topic],function(index,data){
+               $('#partition').append($('<option/>',{
+                   value: index,
+                   text: index
+               }));
+            });
+        }
+
+        function getdata() {
+            var cluster = $("#cluster").val();
+            var group = $('#group').val();
+            var period = $('#period').val();
+            var url = 'get_offsets.php?cluster=' + cluster + '&group=' + group + '&period=' + period;
+            console.log(url);
+            $.getJSON(url, function (data) {
+                $.each(data, function (index, value) {
+                    if (chart_data[value['topic']] == undefined) {
+                        chart_data[value['topic']] = {};
+                    }
+                    if (chart_data[value['topic']][value['partition']] == undefined) {
+                        chart_data[value['topic']][value['partition']] = new Array();
+                    }
+                    chart_data[value['topic']][value['partition']].push([value['logsize'], value['offset'], value['lag'], value['timestamp']]);
+                });
+            }).then(function () {
+                get_topic();
+                get_partition();
+            });
+
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,6 @@
+---
+clusters:
+        firehose : kfp001.grid.prod.yyz.corp.pvt:2181,kfp002.grid.prod.yyz.corp.pvt:2181,kfp003.grid.prod.yyz.corp.pvt:2181,kfp004.grid.prod.yyz.corp.pvt:2181,kfp005.grid.prod.yyz.corp.pvt:2181
+        production : dskf008.grid.prod.yyz.corp.pvt:2181,dskf009.grid.prod.yyz.corp.pvt:2181,dskf010.grid.prod.yyz.corp.pvt:2181,dskf011.grid.prod.yyz.corp.pvt:2181,dskf012.grid.prod.yyz.corp.pvt:2181
+        osdev : devkf354.os.dev.yyz.corp.pvt:2181,devkf353.os.dev.yyz.corp.pvt:2181,devkf351.os.dev.yyz.corp.pvt:2181,devkf350.os.dev.yyz.corp.pvt:2181,devkf352.os.dev.yyz.corp.pvt:2181
+#        osprod : zookeeper002.os.prod.yyz.corp.pvt:2181,zookeeper002.os.prod.yyz.corp.pvt:2181,zookeeper003.os.prod.yyz.corp.pvt:2181

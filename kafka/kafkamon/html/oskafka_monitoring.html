@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="kafka">
+
+<head>
+    <meta charset="utf-8">
+    <title>OS KAFKA MONITORING</title>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-animate.js"></script>
+    <script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-1.3.2.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script src="cluster.js"></script>
+
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        h1 {
+            text-align: center;
+        }
+
+        .badge {
+            float: right;
+        }
+
+        label {
+            font-size: 16;
+            font-weight: bold;
+        }
+    </style>
+
+
+</head>
+
+<body>
+    <h1>OS KAFKA MONITORING</h1>
+    <div ng-controller="clusterCtr">
+        <uib-tabset active="active">
+            <uib-tab index="$index" ng-repeat="cluster in clusters" heading="{{cluster}}">
+                <div ng-controller="groupCtr">
+                    <uib-accordion close-others="true">
+                        <uib-accordion-group heading="{{group}}" ng-repeat="group in groups">
+                            <div ng-controller="topicCtr">
+                                <h3>topic</h3>
+                                <div class="list-group">
+                                    <a href="kafka_chart.html?cluster={{cluster}}&group={{group}}&topic={{topic}}" class="list-group-item" ng-repeat="topic in topics">
+                                        {{topic}}
+                                    </a>
+                                </div>
+                                <h3>partitions</h3>
+                                <div>
+                                <table class="table" >
+
+                                    <tr>
+                                        <th>topic</th>
+                                        <th>partition</th>
+                                        <th>logsize</th>
+                                        <th>offset</th>
+                                        <th>lag</th>
+                                    </tr>
+
+                                    <tr ng-repeat="r in records">
+                                        <td title="Topic">{{r.topic}}</td>
+                                        <td title="Partition" >{{r.partition}}</td>
+                                        <td title="Log Size">{{r.logsize}}</td>
+                                        <td title="Offset">{{r.offset}}</td>
+                                        <td title="Lag" >{{r.lag}}</td>
+                                    </tr>
+                                </table>
+                                </div>
+                            </div>
+                        </uib-accordion-group>
+                    </uib-accordion>
+                </div>
+            </uib-tab>
+        </uib-tabset>
+    </div>
+</body>
+
+</html>
