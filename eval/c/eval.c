@@ -42,7 +42,7 @@ int operator_match(String data,char *tokens) {
     int in_paren=0;
 
     for(index=0;index<data.len;index++) {
-    	if(data.start[index]=='('){
+        if(data.start[index]=='('){
             in_paren++;
             continue;
     	} else if (in_paren>0 && data.start[index]==')') {
@@ -114,7 +114,7 @@ int num(String data) {
     while(i<data.len && data.start[i]==' ')
         i++;
 
-    if (i<data.len) {
+    if (i<data.len || len==0) {
         syntax_error(__LINE__);
     }
     buffer[len]=0;
@@ -204,16 +204,13 @@ int expr(String data) {
 
 int main(int argc,char *argv[])
 {
-    char *test_data=" 3 + 4 * 3 + (45 / (5 + 4)) * 3 - 12 ";
-
+    char *test_data="(3 + 3  * 3 + (45 / (5 + 4)) * 3 - 12 )";
     int result;
-
     //print_list(stdout,tokens);
     String data;
     data.len = strlen(test_data);
     data.start=test_data;
     result = expr(data);
-
     printf("%s = %d\n",test_data,result);
 
     return 0;

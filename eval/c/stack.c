@@ -59,6 +59,7 @@ void print_stack(Stack *stack) {
 }
 
 
+#ifdef TEST_MAIN_
 int main(int argc, char *aragv[]) {
 
     Stack *test = new_stack();
@@ -77,3 +78,4 @@ int main(int argc, char *aragv[]) {
 
     return 0;
 }
+#endif /*TEST_MAIN_*/
