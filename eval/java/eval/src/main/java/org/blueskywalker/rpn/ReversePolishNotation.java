@@ -1,4 +1,4 @@
-package org.blueskywalker.rpn
+package org.blueskywalker.rpn;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -70,11 +70,11 @@ public class ReversePolishNotation {
         for (String token : inputTokens) {
             if (isOperator(token)) {
                 // If token is an operator (x) [S3]
-                while (!stack.empty() &amp;&amp; isOperator(stack.peek())) {
+                while (!stack.empty() && isOperator(stack.peek())) {
                     // [S4]
-                    if ((isAssociative(token, LEFT_ASSOC) &amp;&amp; cmpPrecedence(
+                    if ((isAssociative(token, LEFT_ASSOC) && cmpPrecedence(
                              token, stack.peek()) <= 0)
-                        || (isAssociative(token, RIGHT_ASSOC) &amp;&amp; cmpPrecedence(
+                        || (isAssociative(token, RIGHT_ASSOC) && cmpPrecedence(
                                 token, stack.peek()) < 0)) {
                         out.add(stack.pop()); 	// [S5] [S6]
                         continue;
@@ -87,7 +87,7 @@ public class ReversePolishNotation {
                 stack.push(token); 	// [S8]
             } else if (token.equals(")")) {
                 // [S9]
-                while (!stack.empty() &amp;&amp; !stack.peek().equals("(")) {
+                while (!stack.empty() && !stack.peek().equals("(")) {
                     out.add(stack.pop()); // [S10]
                 }
                 stack.pop(); // [S11]
