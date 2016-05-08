@@ -30,20 +30,29 @@ Stack * push_stack(Stack *stack,int value) {
     Stack *new;
     if (stack->len == stack->size) {
         size_t new_size = stack->size + EXPAND_SIZE;
-        new = new_object(Stack, stack_mem_size(new_size));
-        memcpy(new, stack,stack_mem_size(stack->size));
-        new->size= new_size;
+        new = new_object(Stack,new_size);
+        memcpy(new,stack,stack_mem_size(new_size));
         free(stack);
-        stack = new;
+        stack=new;
     }
-
     (&(stack->data))[stack->len++] = value;
 
     return stack;
 }
 
 int pop_stack(Stack *stack) {
-    return (&(stack->data))[stack->len--];
+
+    if(stack->len>0) {
+        return (&(stack->data))[--(stack->len)];
+    }
+    return -1;
+}
+
+int peek_stack(Stack *stack) {
+    if(stack->len>0) {
+        return (&(stack->data))[stack->len-1];
+    }
+    return -1;
 }
 
 void print_stack(Stack *stack) {
@@ -59,6 +68,7 @@ void print_stack(Stack *stack) {
 }
 
 
+//#define TEST_MAIN_
 #ifdef TEST_MAIN_
 int main(int argc, char *aragv[]) {
 
@@ -70,11 +80,15 @@ int main(int argc, char *aragv[]) {
     test = push_stack(test, 4);
     test = push_stack(test, 5);
 
-    print_stack(test);
-    pop_stack(test);
-    pop_stack(test);
-    print_stack(test);
 
+    printf("%d\n",pop_stack(test));
+    printf("%d\n",pop_stack(test));
+    printf("%d\n",pop_stack(test));
+    printf("%d\n",pop_stack(test));
+    printf("%d\n",pop_stack(test));
+    printf("%d\n",pop_stack(test));
+    printf("%d\n",pop_stack(test));
+    printf("%d\n",pop_stack(test));
 
     return 0;
 }

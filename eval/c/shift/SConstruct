@@ -1,0 +1,4 @@
+
+env = Environment()
+env.Append(CFLAGS='-g')
+env.Program(target='shift',source=['shift_reduce.c', 'stack.c'])
