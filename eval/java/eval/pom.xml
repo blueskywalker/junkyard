@@ -31,7 +31,7 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>1.4.0</version>
                 <configuration>
-                    <mainClass>org.blueskywalker.test.Eval</mainClass>
+                    <mainClass>org.blueskywalker.test.Shift</mainClass>
                 </configuration>
             </plugin>
         </plugins>

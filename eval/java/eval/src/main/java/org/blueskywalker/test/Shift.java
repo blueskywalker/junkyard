@@ -7,24 +7,62 @@ import java.util.Stack;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
+
+
 public class Shift {
 
-    static final String ADD="+";
-    static final String SUBTRACT="-";
-    static final String MULPLY="*";
-    static final String DIVIDE="/";
-    static final String LPAREN="(";
-    static final String RPAREN=")";
+    static enum Type {
+        END,
+        ADD,
+        SUBTRACT,
+        MULTIPLY,
+        DIVIDE,
+        LPAREN,
+        RPAREN,
+        NUM
+    }
 
-    static final Map<String,Integer> precedence =
-        new HashMap<String,Integer>();
+    static final Map<Type, Integer> precedence =
+            new HashMap<>();
 
     static {
-        precedence.put(ADD,10);
-        precedence.put(SUBTRACT,10);
-        precedence.put(MULPLY,20);
-        precedence.put(DIVIDE,20);
-        precedence.put(LPAREN,5);
+        precedence.put(Type.ADD, 10);
+        precedence.put(Type.SUBTRACT, 10);
+        precedence.put(Type.MULTIPLY, 20);
+        precedence.put(Type.DIVIDE, 20);
+        precedence.put(Type.LPAREN, 5);
+        precedence.put(Type.RPAREN, 5);
+        precedence.put(Type.END,0);
+        precedence.put(Type.NUM,0);
+    }
+
+    static class Token {
+        Type type;
+        int value;
+
+        public Token(Type type,int value) { this.type=type; this.value=value; }
+
+
+        @Override
+        public String toString() {
+            return String.format("%s(%d)",type.name(),value);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Token token = (Token) o;
+
+            return type == token.type;
+
+        }
+
+        @Override
+        public int hashCode() {
+            return type != null ? type.hashCode() : 0;
+        }
     }
 
     public class Tokenizer {
@@ -37,125 +75,137 @@ public class Shift {
             this.index = 0;
         }
 
-        public String token() throws Exception {
-            if(index<input.length()) {
-                switch(input.charAt(index)) {
-                case '0':
-                case '1':
-                case '2':
-                case '3':
-                case '4':
-                case '5':
-                case '6':
-                case '7':
-                case '8':
-                case '9':
-                    Matcher m = p.matcher(input.substring(index));
-                    index += m.end();
-                    return m.group();
-                case '+':
-                    index++;
-                    return ADD;
-                case '-':
-                    index++;
-                    return SUBTRACT;
-                case '*':
-                    index++;
-                    return MULPLY;
-                case '/':
-                    index++;
-                    return DIVIDE;
-                default:
-                    throw new Exception("Syntax Error");
+        public Token token() throws Exception {
+            while (index < input.length()) {
+                switch (input.charAt(index)) {
+                    case '0':
+                    case '1':
+                    case '2':
+                    case '3':
+                    case '4':
+                    case '5':
+                    case '6':
+                    case '7':
+                    case '8':
+                    case '9':
+                        Matcher m = p.matcher(input.substring(index));
+                        m.find();
+                        index += m.end();
+                        return new Token(Type.NUM,Integer.valueOf(m.group()));
+                    case '+':
+                        index++;
+                        return new Token(Type.ADD,0);
+                    case '-':
+                        index++;
+                        return new Token(Type.SUBTRACT,0);
+                    case '*':
+                        index++;
+                        return new Token(Type.MULTIPLY,0);
+                    case '/':
+                        index++;
+                        return new Token(Type.DIVIDE,0);
+                    case ' ':
+                        index++;
+                        break;
+                    case '(':
+                        index++;
+                        return new Token(Type.LPAREN,0);
+                    case ')':
+                        index++;
+                        return new Token(Type.RPAREN,0);
+                    default:
+                        throw new Exception("Syntax Error :" + input.charAt(index));
                 }
             }
-            return null;
+            return new Token(Type.END,0);
         }
     }
 
     Stack<Integer> values;
-    Stack<String> ops;
+    Stack<Token> ops;
 
     public Shift() {
         values = new Stack<Integer>();
-        ops = new Stack<String> ();
+        ops = new Stack<Token>();
     }
 
-    int calc(String op,int x, int y) {
+    int calc(Token token, int x, int y) {
 
-        switch(op) {
-        case ADD:
-            return x + y;
-        case SUBTRACT:
-            return x - y;
-        case MULPLY:
-            return x * y;
-        case DIVIDE:
-            return x / y;
+        switch (token.type) {
+            case ADD:
+                return x + y;
+            case SUBTRACT:
+                return x - y;
+            case MULTIPLY:
+                return x * y;
+            case DIVIDE:
+                return x / y;
         }
 
         return 0;
     }
 
-    public int reduce(String next) {
+    public void reduce(Token next) {
 
-        while(ops.size()>0) {
-            String token = ops.peek();
+        while (ops.size() > 0) {
+            Token token = ops.peek();
 
-            if(token.equals(LPAREN)) {
-                if (next.equals(RPAREN)) {
+            if (token.type ==Type.LPAREN) {
+                if (next.type==Type.RPAREN) {
                     ops.pop();
                     break;
                 } else {
                     break;
                 }
             } else {
-                if ( precedence.get(token) >= precedence.get(next)) {
+                if (precedence.get(token.type) >= precedence.get(next.type)) {
                     ops.pop();
                     int y = values.pop();
                     int x = values.pop();
-                    return calc(token,x,y);
+                    values.push(calc(token, x, y));
                 } else {
                     break;
                 }
             }
         }
-        return 0;
     }
 
     public int shift(String data) throws Exception {
         Tokenizer tokenizer = new Tokenizer(data);
 
-        while(true) {
-            String token = tokenizer.token();
-            if (token==null)
+        while (true) {
+            Token token = tokenizer.token();
+            //System.out.println(token);
+            if (token.type ==Type.END) {
+                reduce(token);
                 break;
+            }
 
-            if (token.equals(ADD) ||
-                token.equals(SUBTRACT) ||
-                token.equals(MULPLY) ||
-                token.equals(DIVIDE)) {
+            if (token.type == Type.ADD ||
+                    token.type ==Type.SUBTRACT ||
+                    token.type == Type.MULTIPLY ||
+                    token.type == Type.DIVIDE) {
                 reduce(token);
                 ops.push(token);
-            } else if (token.equals(LPAREN))
+            } else if (token.type == Type.LPAREN)
                 ops.push(token);
-            else if (token.equals(RPAREN)) {
+            else if (token.type == Type.RPAREN) {
                 reduce(token);
             } else {
-                values.push(Integer.valueOf(token));
+                values.push(token.value);
             }
         }
-        return 0;
+        return values.pop();
     }
 
-    public static void main(String [] args) {
+    public static void main(String[] args) {
         String test = " 3 + 4 * 3 + (45 / (5 + 4)) * 3 - 12";
 
         Shift eval = new Shift();
 
         try {
             int result = eval.shift(test);
-            System.out.printf("%s = %d\n",test,result);
+            System.out.printf("%s = %d\n", test, result);
 
         } catch (Exception ex) {
             ex.printStackTrace();
