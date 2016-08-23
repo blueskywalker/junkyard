@@ -1,0 +1,11 @@
+
+
+database:
+  driverClass: org.h2.Driver
+  url : jdbc:h2:file:./kafkadb.db
+
+server:
+  rootPath: '/api/*'
+
+
+kafka.home: /Users/kkim/local/share/kafka_2.11-0.9.0.1
