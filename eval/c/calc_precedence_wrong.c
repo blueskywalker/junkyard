@@ -32,15 +32,15 @@ typedef struct {
     Value value;
 } Token;
 
-typedef struct Node {
+typedef struct Node{
     Token token;
     struct Node * prev;
     struct Node * next;
 } Node;
 
 typedef struct List {
-    Node * head;
-    Node * tail;
+    Node *head;
+    Node *tail;
 } List;
 
 typedef struct {
@@ -131,7 +131,6 @@ void list_push_node(List *self,Node *node) {
     }
 
 }
-
 Node *list_popup_node(List *self) {
     Node *ret=NULL;
 
@@ -298,16 +297,16 @@ List * tokenizing(char *input) {
 
 Node *findParen(List *list) {
     Node *node=NULL;
-    node=list->tail;
+    node=list->head;
 
-    assert(node->token.type==RPAREN);
-    node = node->prev;
+    assert(node->token.type==LPAREN);
+    node = node->next;
 
-    while(node!=list->head) {
-        if(node->token.type == LPAREN) {
+    while(node!=list->tail) {
+        if(node->token.type == RPAREN) {
             return node;
         }
-        node=node->prev;
+        node=node->next;
     }
     return node;
 }
@@ -319,8 +318,8 @@ Node *find_factor(List *list) {
     if(list==NULL)
         return NULL;
 
-    node = list->tail;
-    while(node!=list->head) {
+    node = list->head;
+    while(node!=list->tail) {
         switch (node->token.type) {
         case NUM:
             break;
@@ -328,18 +327,19 @@ Node *find_factor(List *list) {
         case DIVIDE:
             return node;
         case LPAREN:
+            tmp.head = node;
+            tmp.tail = list->tail;
+            node = findParen(&tmp);
+            if(node==list->tail)
+                return node;
+            break;
         case ADD:
         case SUBTRACT:
             break;
         case RPAREN:
-            tmp.head = list->head;
-            tmp.tail = node;
-            node = findParen(&tmp);
-            if(node==list->head)
-                return node;
             break;
         }
-        node = node->prev;
+        node = node->next;
     }
     return node;
 }
@@ -351,27 +351,27 @@ Node *find_term(List *list) {
     if(list==NULL)
         return NULL;
 
-    node = list->tail;
-    while(node!=list->head) {
+    node = list->head;
+    while(node!=list->tail) {
         switch (node->token.type) {
         case NUM:
         case MULTIPLY:
         case DIVIDE:
             break;
         case LPAREN:
+            tmp.head = node;
+            tmp.tail = list->tail;
+            node = findParen(&tmp);
+            if(node==list->tail)
+                return node;
             break;
         case ADD:
         case SUBTRACT:
             return node;
         case RPAREN:
-            tmp.head = list->head;
-            tmp.tail = node;
-            node = findParen(&tmp);
-            if(node==list->head)
-                return node;
             break;
         }
-        node = node->prev;
+        node = node->next;
     }
     return node;
 }
@@ -435,7 +435,7 @@ int term(List *tokens) {
 
     node = find_factor(tokens);
 
-    if(node==tokens->head) {
+    if(node==tokens->tail) {
         return factor(tokens);
     }
 
@@ -456,7 +456,7 @@ int term(List *tokens) {
 
 
 /*
- *  expr -> exp [(+|-)] term
+ *  expr -> term [(+|-)] exp
  *
  */
 
@@ -472,7 +472,7 @@ int expr(List *tokens) {
 
     node = find_term(tokens);
 
-    if(node==tokens->head) {
+    if(node==tokens->tail) {
         return term(tokens);
     }
 
@@ -480,9 +480,9 @@ int expr(List *tokens) {
     right.head=node->next;right.tail=tokens->tail;
 
     if(node->token.type==ADD) {
-        return expr(&left) + term(&right);
+        return term(&left) + expr(&right);
     } else if (node->token.type==SUBTRACT) {
-        return expr(&left) - term(&right);
+        return term(&left) - expr(&right);
     } else {
         fprintf(stderr,"SYNTAX ERROR\n");
         exit(1);

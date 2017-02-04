@@ -48,9 +48,7 @@ def find_term(tok):
     return -1
 
 def exp(tok):
-
     index = find_term(tok)
-
     if index < 0:
         return term(tok)
 
@@ -84,7 +82,6 @@ def term(tok):
         return exp(tok[0:index]) * factor(tok[index+1:])
     else:
         return exp(tok[0:index]) / factor(tok[index+1:])
-
 
 def factor(tok):
     sym, val = tok[0]

@@ -25,7 +25,7 @@ object RPNCalc {
   def main(args: Array[String]) = {
     // Read line by line from stdin + tokenize line + evaluates line
     println("type RPN rule")
-    Source.fromInputStream(System.in).getLines.foreach(l => printf("exp=%2.2f",evalTokens(l.split(" "))))
+    Source.fromInputStream(System.in).getLines.foreach(l => printf("exp=%2.2f\n",evalTokens(l.split(" "))))
   }
 
 }
