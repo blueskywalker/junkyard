@@ -2,7 +2,7 @@
 import re
 
 NUM_REG=r'\d+'
-OP_REG=r'[+-/*\(\)]'
+OP_REG=r'[+-/\*\(\)]'
 SPACE_REG=r'\s+'
 
 def tokenizer(src):
@@ -27,16 +27,16 @@ def tokenizer(src):
         print "Nothing match"
         break
 
-# 
+#
 #  exp = exp +|- term
-#  term = exp *|/ factor 
+#  term = exp *|/ factor
 #  factor = NUM | ( exp )
-# 
+#
 def find_term(tok):
     in_paren = False
     for i, tup in reversed(list(enumerate(tok))):
         sym, val = tup
-        
+
         if sym == 'OP' and val == ')':
             in_paren = True
             continue
@@ -61,7 +61,7 @@ def exp(tok):
 def find_factor(tok):
     in_paren = False
     for i, tup in reversed(list(enumerate(tok))):
-        sym, val = tup        
+        sym, val = tup
         if sym == 'OP' and val == ')':
             in_paren = True
             continue
