@@ -7,14 +7,14 @@ public class Eval {
     int operator_match(String data, String operators) throws SyntaxError {
         int inParen=0;
 
-        for(int i=0;i<data.length();i++) {
-            if (data.charAt(i)=='(') {
+        for(int i=data.length()-1;i>-1;i--) {
+            if (data.charAt(i)==')') {
                 inParen++;
                 continue;
-            } else if (inParen>0 && data.charAt(i)==')') {
+            } else if (inParen>0 && data.charAt(i)=='(') {
                 inParen--;
                 continue;
-            } else if (inParen==0 && data.charAt(i)==')')
+            } else if (inParen==0 && data.charAt(i)=='(')
                 throw new SyntaxError();
 
             for (int j=0;inParen==0 && j<operators.length();j++) {
@@ -77,9 +77,9 @@ public class Eval {
             return factor(data);
         } else {
             if (data.charAt(index)== '*')
-                return factor(data.substring(0,index)) * expr(data.substring(index+1,data.length()));
+                return expr(data.substring(0,index)) * factor(data.substring(index+1,data.length()));
             else
-                return factor(data.substring(0,index)) / expr(data.substring(index+1,data.length()));
+                return expr(data.substring(0,index)) / factor(data.substring(index+1,data.length()));
         }
     }
 
@@ -93,9 +93,9 @@ public class Eval {
             return term(data);
         } else {
             if (data.charAt(index)== '+')
-                return term(data.substring(0,index)) + expr(data.substring(index+1,data.length()));
+                return expr(data.substring(0,index)) + term(data.substring(index+1,data.length()));
             else
-                return term(data.substring(0,index)) - expr(data.substring(index+1,data.length()));
+                return expr(data.substring(0,index)) - term(data.substring(index+1,data.length()));
         }
     }
 
@@ -103,7 +103,7 @@ public class Eval {
 
         Eval evaluator = new Eval();
 
-        String test = " 3 + 4 * 3 + (45 / (5 + 4)) * 3 - 12 ";
+        String test = " 3 + 4 - 7 * 3 + (45 / (5 + 4)) * 3 - 12 ";
 
         try {
             int result = evaluator.expr(test);

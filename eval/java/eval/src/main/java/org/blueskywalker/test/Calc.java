@@ -68,20 +68,31 @@ public class Calc {
     }
 
     public static int findParenthesis(List<String> tokens,int start, int end) throws Exception {
-        if(tokens.get(start).equals("(")) {
-            for(int i=start+1;i<end;i++)
-                if(tokens.get(i).equals(")"))
+        if(tokens.get(end).equals(")")) {
+            
+            for(int i=end-1;i>=start;i--) {
+                if(tokens.get(i).equals(")")) {
+                    int open=findParenthesis(tokens, start, i);
+                    if (open<0)
+                        throw new Exception("Not Matched Parenthsis");
+                    
+                    i=open-1;
+                }
+                if(i>=start && tokens.get(i).equals("("))
                     return i;
-
+            }
+            System.out.println(tokens);
             throw new Exception("Not Matched Parenthsis");
         }
+        
+        
         return -1;
     }
 
     public static int findTerm(List<String> tokens) throws Exception {
-        for(int i=0;i<tokens.size();i++) {
-            int paren = findParenthesis(tokens,i,tokens.size());
-            if (paren>0) {
+        for(int i=tokens.size()-1;i>-1;i--) {
+            int paren = findParenthesis(tokens,0,i);
+            if (paren>-1) {
                 i = paren;
                 continue;
             }
@@ -93,9 +104,9 @@ public class Calc {
     }
 
     public static int findFactor(List<String> tokens) throws Exception {
-        for(int i=0;i<tokens.size();i++) {
-            int paren = findParenthesis(tokens,i,tokens.size());
-            if (paren>0) {
+        for(int i=tokens.size()-1;i>-1;i--) {
+            int paren = findParenthesis(tokens,0,i);
+            if (paren>-1) {
                 i = paren;
                 continue;
             }
@@ -107,8 +118,8 @@ public class Calc {
     }
 
     //
-    // exp    -> term   [ (+|-)  exp ]
-    // term   -> factor [ (*|/)  exp ]
+    // exp    -> [exp  (+|-)]  term 
+    // term   -> [exp  (*|/)]  factor 
     // factor -> num | ( exp )
 
     public static int exp(List<String> tokens) throws Exception {
@@ -120,9 +131,9 @@ public class Calc {
             return term(tokens);
 
         if (tokens.get(op).equals("+"))
-            return term(tokens.subList(0,op)) + exp(tokens.subList(op+1,tokens.size()));
+            return exp(tokens.subList(0,op)) + term(tokens.subList(op+1,tokens.size()));
 
-        return term(tokens.subList(0,op)) - exp(tokens.subList(op+1,tokens.size()));
+        return exp(tokens.subList(0,op)) - term(tokens.subList(op+1,tokens.size()));
     }
 
 
@@ -135,19 +146,19 @@ public class Calc {
             return factor(tokens);
 
         if (tokens.get(op).equals("*"))
-            return factor(tokens.subList(0,op)) * exp(tokens.subList(op+1,tokens.size()));
+            return exp(tokens.subList(0,op)) * factor(tokens.subList(op+1,tokens.size()));
 
-        return factor(tokens.subList(0,op)) / exp(tokens.subList(op+1,tokens.size()));
+        return exp(tokens.subList(0,op)) / factor(tokens.subList(op+1,tokens.size()));
     }
 
     public static int factor (List<String> tokens) throws Exception {
         //System.out.printf("term:%s\n",tokens);
 
         if(tokens.size()>0) {
-            int paren = findParenthesis(tokens, 0, tokens.size());
+            int paren = findParenthesis(tokens, 0, tokens.size()-1);
 
-            if (paren > 0)
-                return exp(tokens.subList(1, paren));
+            if (paren > -1)
+                return exp(tokens.subList(paren+1,tokens.size()-1));
 
             try {
                 return Integer.parseInt(tokens.get(0));
@@ -161,7 +172,7 @@ public class Calc {
 
     public static void main(String[] args) {
         try {
-            String test = " 3 + 4 * 3 + (50 / 5 + 4) * 3 - 12 ";
+            String test = "3 + 4 - 7 * 3 + (45 / (5 + 4)) * 3 - 12";
             List<String> tokens = Calc.tokenizer(test);
             System.out.println(String.format("%s = %d",test,Calc.exp(tokens)));
 
