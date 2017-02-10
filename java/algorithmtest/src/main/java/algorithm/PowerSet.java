@@ -12,13 +12,32 @@ import java.util.stream.Collectors;
  * Created by jerrykim on 12/8/16.
  */
 public class PowerSet {
-    final List<Integer> input;
 
-    public PowerSet(List<Integer> input) {
-        this.input = input;
+    public static List<List<Integer>> perm(List<Integer> input) {
+        ArrayList<List<Integer>> result = new ArrayList<List<Integer>>();
+
+        if (input.size()==0)
+            return result;
+
+        if (input.size()==1) {
+            result.add(input);
+            return result;
+        }
+
+        Integer head = input.get(0);
+        List<List<Integer>> subResult = perm(input.subList(1,input.size()));
+        for(List<Integer> elem : subResult) {
+            for (int i = 0; i < input.size(); i++) {
+                List<Integer> tmp = new ArrayList<Integer>(elem.subList(0, i));
+                tmp.add(head);
+                tmp.addAll(elem.subList(i,elem.size()));
+                result.add(tmp);
+            }
+        }
+        return result;
     }
 
-    public List<List<Integer>> subsets() {
+    public static List<List<Integer>> subsets(List<Integer> input) {
         ArrayList<List<Integer>> result = new ArrayList<List<Integer>>();
         result.add(new ArrayList<Integer>());
 
@@ -33,16 +52,15 @@ public class PowerSet {
             result.addAll(tmpList);
         }
         return result;
-
     }
 
 
     public static void main(String[] args) {
 
         List<Integer> input = Arrays.asList(1,2,3);
-        PowerSet power = new PowerSet(input);
 
-        System.out.println(power.subsets());
+        System.out.println(PowerSet.subsets(input));
+        System.out.println(PowerSet.perm(input));
 
     }
 
