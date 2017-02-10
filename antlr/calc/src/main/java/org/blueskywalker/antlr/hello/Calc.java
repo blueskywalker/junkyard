@@ -7,15 +7,14 @@ import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.misc.Nullable;
-import org.antlr.v4.runtime.tree.ParseTree;
+
 import org.blueskywalker.antlr.calc.CalculatorLexer;
 import org.blueskywalker.antlr.calc.CalculatorParser;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringBufferInputStream;
-import java.io.StringReader;
+
 import java.nio.charset.StandardCharsets;
 
 /**

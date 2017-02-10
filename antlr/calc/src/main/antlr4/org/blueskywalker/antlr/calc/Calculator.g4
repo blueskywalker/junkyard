@@ -17,41 +17,41 @@ LPAR  : '(';
 RPAR  : ')';
 
 input
-    : setVar NL input     # ToSetVar
-    | plusOrMinus NL? EOF # Calculate
+    : setVar NL input
+    | plusOrMinus NL? EOF
     ;
 
 setVar
-    : ID EQUAL plusOrMinus # SetVariable
+    : ID EQUAL plusOrMinus
     ;
 
 
 plusOrMinus
-    : plusOrMinus PLUS multOrDiv  # Plus
-    | plusOrMinus MINUS multOrDiv # Minus
-    | multOrDiv                   # ToMultOrDiv
+    : plusOrMinus PLUS multOrDiv
+    | plusOrMinus MINUS multOrDiv
+    | multOrDiv
     ;
 
 multOrDiv
-    : multOrDiv MULT pow # Multiplication
-    | multOrDiv DIV pow  # Division
-    | pow                # ToPow
+    : multOrDiv MULT pow
+    | multOrDiv DIV pow
+    | pow
     ;
 
 pow
-    : unaryMinus (POW pow)? # Power
+    : unaryMinus (POW pow)?
     ;
 
 unaryMinus
-    : MINUS unaryMinus # ChangeSign
-    | atom             # ToAtom
+    : MINUS unaryMinus
+    | atom
     ;
 
 atom
-    : PI                    # ConstantPI
-    | E                     # ConstantE
-    | DOUBLE                # Double
-    | INT                   # Int
-    | ID                    # Variable
-    | LPAR plusOrMinus RPAR # Braces
+    : PI
+    | E
+    | DOUBLE
+    | INT
+    | ID
+    | LPAR plusOrMinus RPAR
     ;
