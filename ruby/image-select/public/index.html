@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+
+<head>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twbs-pagination/1.4.1/jquery.twbsPagination.min.js"></script>
+    <style>
+        ul {
+            list-style-type: none;
+        }
+        .image-list {
+          display: inline-flex;
+          margin: 5px;
+        }
+        .image-itself {
+          height: 200px;
+          width: 200px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="text-center">
+        <ul id="pagination-demo"></ul>
+    </div>
+    <div class="text-center">
+      <div id="brand-name">name here</div>
+      <div id="number-of-images">numbers</div>
+    </div>
+    <div>
+        <ul id="image-container"></ul>
+    </div>
+    <script type="text/javascript">
+        function images_pagination(page, size) {
+            url = '/graph?page=' + page + '&size=' + size;
+            // console.log(url);
+            $.getJSON(url, function(data) {
+                    console.log(data['data'][0]['fbid']);
+                    images = data['data'][0]['images']
+                    fbid = data['data'][0]['fbid']
+                    $.getJSON('/facebook?fbid='+fbid,function(data){
+                        $('#brand-name').html(data['name'] + ' ( ' + data['id'] + ' )')
+                    });
+                    $('#number-of-images').html(images.length);
+                    $('ul#image-container').empty();
+                    images.forEach(function(element) {
+                        item = '<li class="image-list"><img class="image-itself" src=' + element + '></li>'
+                        $('ul#image-container').append(item);
+                    });
+            });
+        }
+        $.getJSON('/graph', function(data) {
+            // console.log(data)
+            $('#pagination-demo').twbsPagination({
+                totalPages: data['total'],
+                visiblePages: 7,
+                onPageClick: function(event, page) {
+                    images_pagination(page, 1)
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
