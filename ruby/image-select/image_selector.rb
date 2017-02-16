@@ -1,4 +1,3 @@
-
 require 'sinatra'
 require 'mongo'
 require 'json'
@@ -33,11 +32,12 @@ get '/graph' do
   output.to_json
 end
 
+access_token="1380374468852725%7Cd5zZcwcUyaF7i1VMUa31kD1Pz6k"
+graph = Koala::Facebook::API.new(access_token)
+Koala.config.api_version = "v2.8"
+
 get '/facebook' do
   fbid=params['fbid']
   return {} unless fbid
-  access_token="1380374468852725%7Cd5zZcwcUyaF7i1VMUa31kD1Pz6k"
-  graph = Koala::Facebook::API.new(access_token)
-  Koala.config.api_version = "v2.8"
   graph.get_object("#{fbid}?field=id,name").to_json
 end
