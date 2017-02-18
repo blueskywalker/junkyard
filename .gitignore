@@ -1,2 +1,15 @@
 
 */target/*
+**/*.o
+c++/.metadata
+*.
+*.
+.project
+c++/first/.settings
+c++/hello/.settings
+c++/lambda/Debug
+*.dblite
+c++/lambda/.settings
+eval/python/.vscode
+eval/c/.vscode
+.cproject

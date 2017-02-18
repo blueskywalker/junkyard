@@ -112,20 +112,20 @@ Token tokenize(char *data) {
 static Stack *ops;
 static Stack *values;
 
-int reduce(int nextOp) {
+int reduce(int next_op) {
     while (ops->len>0) {
-        int cOp = peek_stack(ops);
-        if (cOp == LPAREN) {
-            if (nextOp == RPAREN)
+        int c_op = peek_stack(ops);
+        if (c_op == LPAREN) {
+            if (next_op == RPAREN)
                 pop_stack(ops);
             break;
-        } else if (precedence[cOp] >= precedence[nextOp]) {
+        } else if (precedence[c_op] >= precedence[next_op]) {
             int x,y;
-            cOp = pop_stack(ops);
+            c_op = pop_stack(ops);
             y = pop_stack(values);
             x = pop_stack(values);
             //printf("%d %s %d\n",x,symbol_name[cOp],y);
-            values = push_stack(values,fn[cOp](x,y));
+            values = push_stack(values,fn[c_op](x,y));
         } else {
             break;
         }
@@ -158,7 +158,7 @@ int shift_reduce(char *data) {
 
 int main(int argc,char *argv[]) {
 
-    char *test_data=" 3 + 4 * 3 + (45 / (5 + 4)) * 3 - 12 ";
+    char *test_data=" 3 + 4 -2 * 3 + (45 / (5 + 4)) * 3 - 12 ";
     //char *test_data=" 3 + 4 * 3 + 45 / 5 + 4 * 3 - 12 ";
 
     ops = new_stack();

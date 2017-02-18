@@ -4,6 +4,8 @@ import re
 import sys
 
 class CLexer(object):
+    """ Lexer """
+
     def __init__(self, tokens):
         self.tokendef = tokens
 
@@ -31,13 +33,28 @@ class CLexer(object):
                 raise Exception("Not defined Symbol")
 
 
+class CalSyntax(object):
+    """ syntax """
+    def __init__(self):
+        self.actions= {
+            '+': lambda x,y : x + y,
+            '-': lambda x,y : x - y,
+            '*': lambda x,y : x * y,
+            '/': lambda x,y : x / y
+        }
+
+    def apply(self,op,x,y):
+        return self.actions[op](x,y)
+
 def main():
     def t_num(t):
         return int(t)
 
     tokens = [
         ('NUM',r'\d+',t_num),
-        ('OP', r'[+-/\*\(\)]'),
+        ('OP', r'[+-/\*]'),
+        ('LPAREN',r'\(',),
+        ('RPAREN',r'\)'),
         ('SP', r'\s+','ignore')
     ]
 
@@ -45,6 +62,9 @@ def main():
     for t in lex.generator("1 + 20 - 13 *  (5 + 34)  / 5 + 1 - 2"):
         print t
 
+    syntax  = CalSyntax()
+
+    print syntax.apply('+',1,2)
 
 if __name__ == '__main__':
     main()

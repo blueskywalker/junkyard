@@ -204,7 +204,7 @@ int expr(String data) {
 
 int main(int argc,char *argv[])
 {
-    char *test_data="(3 + 3  * 3 + (45 / (5 + 4)) * 3 - 12 )";
+    char *test_data="(3 + 4 - 10  * 3 + (45 / (5 + 4)) * 3 - 12 )";
     int result;
     //print_list(stdout,tokens);
     String data;

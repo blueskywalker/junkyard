@@ -379,7 +379,7 @@ Node *find_term(List *list) {
 
 void debug_msg(const char *msg,List *tokens) {
     printf("%s",msg);
-    print_list(stdout,tokens);
+    if(tokens) print_list(stdout,tokens);
     printf("\n");
 }
 
@@ -439,12 +439,14 @@ int term(List *tokens) {
         return factor(tokens);
     }
 
-    left.head=tokens->head;left.tail=node->prev;
+    left.head=tokens->head;left.tail=node->prev;left.tail->next=NULL;
     right.head=node->next;right.tail=tokens->tail;
 
     if(node->token.type==MULTIPLY) {
+        debug_print("factor * expr",NULL);
         return factor(&left) * expr(&right);
     } else if (node->token.type==DIVIDE) {
+        debug_print("factor / expr",NULL);
         return factor(&left) / expr(&right);
     } else {
         fprintf(stderr,"SYNTAX ERROR\n");
@@ -476,12 +478,14 @@ int expr(List *tokens) {
         return term(tokens);
     }
 
-    left.head=tokens->head;left.tail=node->prev;
+    left.head=tokens->head;left.tail=node->prev;left.tail->next=NULL;
     right.head=node->next;right.tail=tokens->tail;
 
     if(node->token.type==ADD) {
+        debug_print("term + expr",NULL);
         return term(&left) + expr(&right);
     } else if (node->token.type==SUBTRACT) {
+        debug_print("term - expr",NULL);
         return term(&left) - expr(&right);
     } else {
         fprintf(stderr,"SYNTAX ERROR\n");
@@ -498,7 +502,6 @@ int main(int argc,char *argv[])
     int result;
 
     //print_list(stdout,tokens);
-
     result = expr(tokens);
 
     printf("%s = %d\n",test_data,result);
