@@ -1,21 +1,39 @@
 #!/usr/bin/env python
+""" permutation """
 
-
-def perm(src):
-
+def classic_perm(src):
+    'classical loop'
     if len(src) == 1:
         return [src]
 
     pivot = src[:1]
-    return [sub[:i] + pivot + sub[i:] for i in range(len(src)) for sub in perm(src[1:]) ]
 
+    result = []
+
+    for sub in classic_perm(src[1:]):
+        for i in range(len(src)):
+            result.append(sub[:i] + pivot + sub[i:])
+
+    return result
+
+
+def perm(src):
+    """ compact """
+    if len(src) == 1:
+        return [src]
+
+    pivot = src[:1]
+    return [sub[:i] + pivot + sub[i:] for sub in perm(src[1:]) for i in range(len(src))]
 
 
 
 def main():
-    test=['a','b','c']
+    """ main """
+    test = ['a', 'b', 'c', 'd']
 
-    print perm(test)
+    #print classic_perm(test)
+    for item in perm(test):
+        print item
 
 
 if __name__ == "__main__":
