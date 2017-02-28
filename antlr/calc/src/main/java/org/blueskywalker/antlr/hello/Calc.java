@@ -41,7 +41,6 @@ public class Calc {
 
         CalculatorBaseVisitorImpl visitor = new CalculatorBaseVisitorImpl();
         Double result = visitor.visit(parser.input());
-
         System.out.println(String.format("%s = %f",test,result));
     }
 }
