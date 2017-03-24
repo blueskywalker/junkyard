@@ -6,9 +6,20 @@ class Card:
         self.value = value
         self.desc = desc
 
+    def __repr__(self):
+        return "%s [%d]" % (self.desc, self.id)
+
     def __str__(self):
         return self.desc
 
+    def __cmp__(self, other):
+        return self.id - other.id
+
+    def __eq__(self, other):
+        return self.id == other.id
+
+    def __hash__(self):
+        return self.id
 
 hwa_too = [
     Card(1, 1, 20, '1 gwang'),      # 1 gwang
@@ -39,7 +50,7 @@ hwa_too = [
     Card(26, 7, 5, '7 cho-dan'),    # 7 cho-dan
     Card(27, 7, 1, '7 pee'),        # 7 pee
     Card(28, 7, 1, '7 pee'),        # 7 pee
-    Card(29, 8, 20, '7 gwang'),     # 8 gwang
+    Card(29, 8, 20, '8 gwang'),     # 8 gwang
     Card(30, 8, 10, '8 bird'),      # 8 bird
     Card(31, 8, 1, '8 pee'),        # 8 pee
     Card(32, 8, 1, '8 pee'),        # 8 pee
@@ -55,10 +66,10 @@ hwa_too = [
     Card(42, 11, 1, '11 crap double pee'),  # 11 double pee
     Card(43, 11, 1, '11 pee'),           # 11 pee
     Card(44, 11, 1, '11 pee'),           # 11 pee
-    Card(45, 12, 20, 'rain gwang'),      # 12 rain gwang
-    Card(46, 12, 10, 'rain bird'),       # 12 rain bird
-    Card(47, 12, 5, 'rain-dan'),         # 12 rain-dan
-    Card(48, 12, 1, 'rain double pee')   # 12 double pee
+    Card(45, 12, 20, '12 rain gwang'),      # 12 rain gwang
+    Card(46, 12, 10, '12 rain bird'),       # 12 rain bird
+    Card(47, 12, 5, '12 rain-dan'),         # 12 rain-dan
+    Card(48, 12, 1, '12 rain double pee')   # 12 double pee
 ]
 
 double_pee = {33, 42, 48}
