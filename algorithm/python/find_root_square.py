@@ -17,5 +17,5 @@ def babylonian(n):
 
     return guess
 
-print babylonian(2)
-print babylonian(20)
+print( babylonian(2) )
+print( babylonian(20) )

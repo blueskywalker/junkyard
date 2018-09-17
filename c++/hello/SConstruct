@@ -1,1 +1,1 @@
-Program('src/hello.cpp')
+Program('hello','src/hello.cpp')
