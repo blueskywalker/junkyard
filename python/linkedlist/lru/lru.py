@@ -28,6 +28,11 @@ class LRUCache(object):
             return None
 
     def _set(self, new_node):
+        if new_node.key_value() in self.htable:
+            old_node=self.htable[new_node.key_value()]
+            self.dlist.delete(old_node) 
+            del self.htable[new_node.key_value()]
+
         if len(self.htable) == self.max:
             node = self.dlist._remove()
             del self.htable[node.key_value()]
@@ -49,31 +54,34 @@ class LRUCache(object):
         print()
 
 
-def  lru_cache(func):
-    def wrapper(*args, **kwargs):
-        params=str(locals())
-        result = wrapper.cache.get(params)
-        if result is not None:
-            return result[1]
-        ret_value=func(*args, **kwargs)
-        wrapper.cache.set(data=(params, ret_value), key=lambda x: x[0])
-        return ret_value
 
-    wrapper.cache = LRUCache(max_size=128)
-    return wrapper
+def lru_cache(max_size=128):
+    def  cache_decorator(func):
+        def wrapper(*args, **kwargs):
+            params=str(locals())
+            result = wrapper.cache.get(params)
+            if result is not None:
+                return result[1]
+            ret_value=func(*args, **kwargs)
+            wrapper.cache.set(data=(params, ret_value), key=lambda x: x[0])
+            return ret_value
+
+        wrapper.cache = LRUCache(max_size=max_size)
+        return wrapper
+    return cache_decorator
 
 if __name__ == '__main__':
 
     import random
 
     def main():
-        # test_data = [ random.randint(1, 20) for _ in range(30) ]
-        # cache = LRUCache(max_size=10)
+        test_data = [ random.randint(1, 20) for _ in range(30) ]
+        cache = LRUCache(max_size=10)
 
-        # for item in test_data:
-        #     print("IN {}".format(cache.get(data=item)))
+        for item in test_data:
+            print("IN {}".format(cache.get(data=item)))
 
-        # cache.show()
+        cache.show()
 
         test(10);
 
