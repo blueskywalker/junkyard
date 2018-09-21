@@ -9,11 +9,18 @@ class MyClass {
 private:
   int _i;
 public:
+  MyClass() : _i(0) {}
   MyClass(int i) : _i(i) {}
+  MyClass(const MyClass &) = default;
   int get() const { return _i; }
 
   bool operator<(const MyClass &other) {
     return _i < other._i;
+  }
+
+  friend ostream& operator<<(ostream& os, const MyClass& cls) {
+    os << cls._i;
+    return os;
   }
 };
 
@@ -27,10 +34,12 @@ struct less<MyClass> {
 
 int main(int argc, char *argv[]) {
 
-  map<MyClass, int> hello;
+  map<MyClass, MyClass> hello;
 
   MyClass a(1);
-  hello[a] = 10;
+  MyClass b(2);
+  hello[a] = b;
 
+  cout << hello[a] << endl;
   return 0;
 }

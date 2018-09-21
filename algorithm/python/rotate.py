@@ -11,3 +11,5 @@ k-=1
 result = src[k:] + src[:k]
 
 print result
+
+

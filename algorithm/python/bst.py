@@ -73,7 +73,9 @@ class BST:
         for e in elems:
             self.add(e)
 
+data=[5, 1, 6, 2, 7, 4, 8, 3, 9]
+
 tree = BST()
-tree.addAll(*[5, 1, 6, 2, 7, 4, 8, 3, 9])
+tree.addAll(*data)
 
 tree.print_tree()

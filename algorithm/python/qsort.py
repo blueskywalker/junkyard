@@ -16,8 +16,26 @@ def qsort(data_in):
     return  qsort([ x for x in data_in[1:] if x < data_in[0] ]) + [ data_in[0]] + qsort([ x for x in data_in[1:] if x>= data_in[0]])
 
 
+def simple_qsort(data):
+
+    if len(data) < 2:
+        return data
+
+    index = len(data) // 2
+
+    data[0], data[index] = data[index], data[0]
+
+    pivot = data[0]
+
+    left = [ x for x in data[1:] if x < pivot ]
+    right = [ x for x in data[1:] if x >= pivot ]
+
+    return simple_qsort(left) + [pivot] + simple_qsort(right)
+
+
 def main():
     print qsort(TEST_DATA)
+    print simple_qsort(TEST_DATA)
 
 if __name__ == "__main__":
     main()
