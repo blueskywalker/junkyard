@@ -22,17 +22,18 @@ def find_matched_bracket(data):
 
     return -1
 
+
 def expansion(data):
     m = re.search(OPEN, data)
     if m is None:
         return data
 
     prev = data[:m.start()]
-    rest = data[m.end()-1:]
+    rest = data[m.end():]
 
     matched = find_matched_bracket(rest)
     if matched < 0:
-        return prev + m.group(0) + rest[1:]
+        return prev + m.group(0) + rest
 
     repeat = int(m.group(1)) * expansion(rest[1:matched])
 
@@ -43,10 +44,10 @@ def expansion(data):
 
 
 def main():
-    data=['abc', '10[abc]','10[ab3[c]d]', 'abc10[abc3[de]fg]hij', 'abc2[d]fgh3[i]', 'abc5[i10[aa]5[z]]fff3[ab2[yx3[z]i]]']
+    data=['abc', '10[abc]','10[ab3[c]d]', 'abc10[abc3[de]fg]hij', 'abc2[d]fgh3[i]', 'abc5[i2[aa]5[z]]fff3[ab2[yx3[z]i]]']
+    data = ['abc5[i2[aa]5[z]]fff3[ab2[yx3[z]i]]']
     for item in data:
         print(item, expansion(item))
-
 
 if __name__ == "__main__":
     main()

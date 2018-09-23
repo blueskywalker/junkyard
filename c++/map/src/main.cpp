@@ -40,6 +40,9 @@ int main(int argc, char *argv[]) {
   MyClass b(2);
   hello[a] = b;
 
+  hello.insert(make_pair(MyClass(3), MyClass(4)));
+
   cout << hello[a] << endl;
+  cout << hello[MyClass(3)] << endl;
   return 0;
 }
