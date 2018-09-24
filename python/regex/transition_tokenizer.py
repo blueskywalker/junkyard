@@ -83,47 +83,37 @@ class ActionTable(object):
         repeat =  int(''.join(self.num_)) if len(self.num_) > 0 else 1
         self.stack_.append((''.join(self.str_), repeat, achar))
         self.clean()
-    
-    def copy_and_push(self):
-        self.copy2str()
-        self.push_to_stack()
+
 
     def pop_stack(self, achar):
-        self.stack_.append((''.join(self.str_), 1, achar))
+        content = ''.join(self.str_)
         self.clean()
 
-        while True:
-            if len(self.stack_) > 1:
-                last = self.stack_.pop()
-                prev = self.stack_.pop()
-                if prev[2]=='[' and last[2]==']' or prev[2] is None and last[2] is None:
-                    repeat = prev[1] * last[0]
-                    self.stack_.append((prev[0] + repeat, 1, None))
-                else:
-                    self.stack_.append(prev)
-                    self.stack_.append(last)
-                    break
-            else:
-                break
+        if len(self.stack_) > 0:
+            last = self.stack_.pop()
+            merge = last[0] + last[1] * content
+            self.str_ = list(merge)
+        else:
+            raise SyntaxError('No Matched []')
 
     def present(self):
-        while len(self.stack_) > 1:
-            last = self.stack_.pop()
-            prev = self.stack_.pop()
-            self.stack_.append((prev[0] + (prev[1] * last[0]), 1, None))
-        return self.stack_[0]
 
+        if len(self.stack_) > 0:
+            raise SyntaxError("No Matched []")
+
+        return ''.join(self.str_)
 
     def is_in_bracket(self):
         if len(self.stack_) == 0:
-            raise ValueError('Stack is Empty')
-
-        for item in self.stack_:
-            if item[2] == '[':
-                return True
             return False
 
-    def nothing(self):
+        item = self.stack_[-1]
+        if item[2] == '[':
+            return True
+        return False
+
+
+    def nothing(self, a=None):
         pass
 
 acts = ActionTable()
@@ -131,27 +121,27 @@ acts = ActionTable()
 actions = {
     (0, 1) : acts.add_num,
     (0, 2) : acts.add_str, 
-    (0, 7) : acts.push_to_stack,
+    (0, 7) : acts.nothing,
     (1, 1) : acts.add_num,
     (1, 2) : acts.copy2str,
     (1, 3) : acts.push_to_stack,
-    (1, 7) : acts.copy_and_push,
+    (1, 7) : acts.copy2str,
     (2, 1) : acts.add_num,
     (2, 2) : acts.add_str,
-    (2, 7) : acts.copy_and_push,
+    (2, 7) : acts.nothing,
     (3, 4) : acts.add_num,
     (3, 5) : acts.add_str,
     (3, 6) : acts.pop_stack,
-    (3, 7) : acts.copy_and_push,
+    (3, 7) : acts.nothing,
     (4, 3) : acts.push_to_stack,
     (4, 4) : acts.add_num,
     (4, 5) : acts.copy2str,
     (4, 6) : acts.push_to_stack,
-    (4, 7) : acts.copy_and_push,
+    (4, 7) : acts.copy2str,
     (5, 4) : acts.add_num,
     (5, 5) : acts.add_str,
     (5, 6) : acts.pop_stack,
-    (5, 7) : acts.copy_and_push,
+    (5, 7) : acts.nothing,
     (6, 1) : acts.add_num,
     (6, 2) : acts.add_str,
     (6, 4) : acts.add_num,
@@ -170,18 +160,11 @@ def expansion(data):
                 next_state = next_state[1]
             else:
                 next_state = next_state[0]
-        actions[(state, next_state)](item)
+        action = actions[(state, next_state)]
+        action(item)
         state = next_state
 
     actions[(state, 7)]()
     result = acts.present()
-    return result[0]
+    return result
 
-def main():
-    #data=['abc', '2[abc]','2[ab3[c]d]', 'abc2[abc3[de]fg]hij', 'abc2[d]fgh3[i]', 'abc5[i2[aa]5[z]]fff3[ab2[yx3[z]i]]']
-    data = [ 'abc5[i2[aa]5[z]]fff3[ab2[yx3[z]i]]' ]
-    for item in data:
-        print(item, expansion(item))
-
-if __name__ == '__main__':
-    main()
