@@ -10,7 +10,7 @@ class TokenType(Enum):
     SPACE = 4
     NONE = 5
 
-transition= {   
+transition= {
     0 : { TokenType.DIGIT : 1, TokenType.NON_DIGIT : 2},
     1 : { TokenType.DIGIT : 1, TokenType.NON_DIGIT : 2, TokenType.OPEN : 3 },
     2 : { TokenType.DIGIT : 1, TokenType.NON_DIGIT : 2},
@@ -54,7 +54,7 @@ def get_next_state(state, achar):
     canditates = transition[state]
     token = get_token(state, achar)
     return canditates[token]
-    
+
 
 class ActionTable(object):
 
@@ -85,7 +85,16 @@ class ActionTable(object):
         self.clean()
 
 
-    def pop_stack(self, achar):
+    def pop_stack(self, achar=None):
+
+        if achar is None:
+            buffer=""
+            while len(self.stack_) > 0:
+                item = self.stack_.pop()
+                buffer = ''.join(map(str,list(item))) + buffer
+            self.str_ += list(buffer)
+            return
+
         content = ''.join(self.str_)
         self.clean()
 
@@ -120,7 +129,7 @@ acts = ActionTable()
 
 actions = {
     (0, 1) : acts.add_num,
-    (0, 2) : acts.add_str, 
+    (0, 2) : acts.add_str,
     (0, 7) : acts.nothing,
     (1, 1) : acts.add_num,
     (1, 2) : acts.copy2str,
@@ -132,7 +141,7 @@ actions = {
     (3, 4) : acts.add_num,
     (3, 5) : acts.add_str,
     (3, 6) : acts.pop_stack,
-    (3, 7) : acts.nothing,
+    (3, 7) : acts.pop_stack,
     (4, 3) : acts.push_to_stack,
     (4, 4) : acts.add_num,
     (4, 5) : acts.copy2str,
@@ -147,7 +156,7 @@ actions = {
     (6, 4) : acts.add_num,
     (6, 5) : acts.add_str,
     (6, 6) : acts.pop_stack,
-    (6, 7) : acts.nothing
+    (6, 7) : acts.pop_stack
  }
 
 def expansion(data):
@@ -167,4 +176,3 @@ def expansion(data):
     actions[(state, 7)]()
     result = acts.present()
     return result
-
