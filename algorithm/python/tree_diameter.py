@@ -100,10 +100,15 @@ def treeDiameter(n, tree):
 
 def main():
     n=10
-    tree = [[3,0], 
- [3,4], 
+    tree = [[1,3], 
+ [7,3], 
+ [5,3], 
+ [8,7], 
+ [4,1], 
  [2,3], 
- [3,1]]
+ [9,4], 
+ [0,8], 
+ [6,8]]
 
     # nary = Tree()
     # for item in tree:
