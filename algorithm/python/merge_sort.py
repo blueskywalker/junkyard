@@ -23,7 +23,7 @@ def merge_sort(data):
         while i < len(left):
             ret.append(left[i])
             i+=1
-        
+
         while j < len(right):
             ret.append(right[j])
             j+=1
