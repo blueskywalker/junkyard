@@ -49,7 +49,6 @@ def perm(src):
     return [sub[:i] + pivot + sub[i:] for sub in perm(src[1:]) for i in range(len(src))]
 
 
-
 def main():
     """ main """
     test = ['a', 'b', 'c']

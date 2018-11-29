@@ -44,7 +44,7 @@ class LRUCache(object):
     def set(self, data=None, key=str):
         return self._set(LRUNode(data=data, key=key))
 
-    
+
     def show(self):
         #print('{head}:{tail}'.format(**self.dlist.__dict__))
         node = self.dlist.head
