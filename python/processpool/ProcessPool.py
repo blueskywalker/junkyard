@@ -6,7 +6,7 @@ import sys
 def xxxxxxxxxxxxxxxjob_done():
     pass
 
-def process_worker(que):    
+def process_worker(que):
     while True:
         try:
             func, args = que.get()
@@ -24,14 +24,14 @@ class ProcessPool(object):
 
     def __init__(self, processes=1):
         self.pool = Pool(processes=processes)
-        manager = Manager()        
+        manager = Manager()
         self.que = manager.JoinableQueue()
         for _ in range(processes):
             self.pool.apply_async(process_worker, args=(self.que,))
 
     def add(self, func, args=()):
         self.que.put((func,args))
-    
+
     def close(self):
         for _ in range(self.pool._processes):
             self.que.put((xxxxxxxxxxxxxxxjob_done, (1,)))
