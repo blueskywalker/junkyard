@@ -3,68 +3,92 @@
 import re
 import sys
 
+
+class SyntaxError(Exception):
+    pass
+
+
+class Token(object):
+
+    def __init__(self, name, value=None):
+        self.name = name
+        self.value = value
+
+    def __repr__(self):
+        return 'Token(name={name}, value={value})'.format(**self.__dict__)
+
+
 class CLexer(object):
     """ Lexer """
 
-    def __init__(self, tokens):
-        self.tokendef = tokens
+    def __init__(self):
+        self.tokens = [
+            (re.compile(r'\d+'), lambda match: Token('NUM', int(match))),
+            (re.compile(r'[+-/\*]'), lambda match: Token('OP')),
+            (re.compile(r'\('), lambda match: Token('LPAREN')),
+            (re.compile(r'\)'), lambda match: Token('RPAREN')),
+            (re.compile(r'\s+'), lambda match: None)
+        ]
 
-    def generator(self,source):
-        text=source
+    def generator(self, source):
+        text = source
         while text:
-            not_matched=True
-            for k in self.tokendef:
-                m = re.match(k[1],text)
+            for token in self.tokens:
+                m = token[0].match(text)
                 if m:
-                    v = text[m.start():m.end()]
-
-                    if len(k)>2 and k[2]:
-                        if k[2] !='ignore':
-                            value = k[2](v)
-                            yield (k[0],value)
-                    else:
-                        yield (k[0],v)
-
-                    text=text[m.end():]
-                    not_matched=False
+                    tok = token[1](m.group())
+                    if tok:
+                        yield tok
+                    text = text[m.end():]
                     break
-
-            if not_matched:
-                raise Exception("Not defined Symbol")
+            else:
+                raise SyntaxError("Not defined Symbol:[{}]".format(text))
 
 
 class CalSyntax(object):
     """ syntax """
     def __init__(self):
-        self.actions= {
-            '+': lambda x,y : x + y,
-            '-': lambda x,y : x - y,
-            '*': lambda x,y : x * y,
-            '/': lambda x,y : x / y
+
+        self.rules = {
+            '+': lambda x, y: x + y,
+            '-': lambda x, y: x - y,
+            '*': lambda x, y: x * y,
+            '/': lambda x, y: x / y
         }
 
-    def apply(self,op,x,y):
-        return self.actions[op](x,y)
+        ##
+        # EXP
+        # EXP  = EXP [+|-] TERM
+        # TERM = TERM [*|/] ELEM
+        # ELEM = NUM | ( EXP )
+        #
+        self.stack = []
+
+    def _shift(self, token):
+        self.stack.append(token)
+
+    def _reduce(self, token):
+        self.stack.pop()
+
+    def _apply(self, op, x, y):
+        return self.actions[op](x, y)
+
+    def parse(self, data):
+        lex = CLexer(self.tokens)
+        for token in lex.generator(data):
+            pass
+
 
 def main():
-    def t_num(t):
-        return int(t)
 
-    tokens = [
-        ('NUM',r'\d+',t_num),
-        ('OP', r'[+-/\*]'),
-        ('LPAREN',r'\(',),
-        ('RPAREN',r'\)'),
-        ('SP', r'\s+','ignore')
-    ]
+    data = "1 + 20 - 13 *  (5 + 34)  / 5 + 1 - 2"
+    lex = CLexer()
+    for t in lex.generator(data):
+        print(t)
 
-    lex = CLexer(tokens)
-    for t in lex.generator("1 + 20 - 13 *  (5 + 34)  / 5 + 1 - 2"):
-        print t
+    # syntax = CalSyntax()
+    # syntax.parse(data)
 
-    syntax  = CalSyntax()
-
-    print syntax.apply('+',1,2)
 
 if __name__ == '__main__':
     main()
