@@ -8,11 +8,11 @@
 import sys
 import operator
 
-ops = { '+': operator.add,
-        '-': operator.sub,
-        '*': operator.mul,
-        '/': operator.truediv if sys.version_info > (3, 0) else operator.div
-}
+ops = {'+': operator.add,
+       '-': operator.sub,
+       '*': operator.mul,
+       '/': operator.truediv if sys.version_info > (3, 0) else operator.div}
+
 
 def eval_exp(tokens, stack):
     for token in tokens:
@@ -25,7 +25,7 @@ def eval_exp(tokens, stack):
             a = stack.pop()
             b = stack.pop()
             op = ops[token]
-            stack.append(op(b,a))
+            stack.append(op(b, a))
         else:
             raise ValueError('WTF? %s' % (token,))
 
@@ -35,7 +35,7 @@ def eval_exp(tokens, stack):
 if __name__ == '__main__':
     stack = []
     while True:
-        in_func = input if sys.version_info> (3, 0) else raw_input
+        in_func = input if sys.version_info > (3, 0) else raw_input
         expr = in_func('> ')
         if expr in ['quit', 'q', 'exit']:
             exit()

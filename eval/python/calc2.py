@@ -3,6 +3,7 @@
 import re
 import types
 
+
 class TokenDef(object):
     """ DEFINE """
 
@@ -16,6 +17,7 @@ class TokenDef(object):
 
     def __str__(self):
         return "TokenDef[{},{},{}]".format(self.name,self.regex,self,func)
+
 
 class Token(object):
     """ Token """
@@ -82,18 +84,17 @@ class CLexer(object):
             if not_matched:
                 raise Exception("Not defined Symbol")
 
-
     def stream(self,source):
         return TokenStream(self.lex(source))
 
 
-  # exp = term | term + term | term - term
-  # term = factor | factor * factor | facotr / factor
-  # factor = NUM | ( exp )
+# exp = term | term + term | term - term
+# term = factor | factor * factor | facotr / factor
+# factor = NUM | ( exp )
+
 
 def exp(toks):
-
-
+    pass
 
 
 def main():
@@ -112,7 +113,8 @@ def main():
     tok = lexer.stream("1 + 20 - 13 *  (5 + 34)  / 5 + 1 - 2")
 
     for t in tok:
-        print t
+        print(t)
+
 
 if __name__ == '__main__':
     main()
