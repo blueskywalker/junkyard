@@ -3,7 +3,6 @@ import cv2
 import numpy as np
 import os
 import struct
-from .nio_thread_pool import ProcessPool
 import logging
 import glob
 
