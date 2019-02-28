@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package datalake;
+
+option java_package = "io.nio.protobuf";
+
+service SensorQuery {
+    // Sends a list of RespObject
+    rpc listSensorData (QueryObject) returns (stream RespObject) {}
+}
+message RespObjects{
+    repeated RespObject respObject = 1;
+}
+
+message RespObject {
+    uint64 eventId = 1;
+    string name = 2;
+    repeated ColumnResponseDetail columnResponseDetail = 3;
+}
+
+message ColumnResponseDetail {
+    uint64 timestamp = 1;
+    bytes value = 2;
+}
+
+message QueryObject {
+    uint64 startEventId = 1 ;
+    uint64 endEventId = 2 ;
+    string vehicleId = 3;
+    string tripId = 4;
+    repeated ColumnQueryDetail columnQueryDetail = 5;
+    repeated string columnReturnDetail = 6;
+}
+
+message ColumnQueryDetail{
+    string name = 1;
+    ColumnOperator operator = 2;
+    string value = 3;
+}
+
+enum ColumnOperator{
+    LESS_THAN = 0;
+    GREATER_THAN = 1;
+    LESS_THAN_OR_EQUAL = 2;
+    GREATER_THAN_OR_EQUAL = 3;
+    EQUAL = 4;
+    NOT_EQUAL = 5;
+}

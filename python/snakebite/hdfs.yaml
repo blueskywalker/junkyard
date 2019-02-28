@@ -1,0 +1,8 @@
+
+dev:
+  host: trevally.amer.nevint.com
+  port: 9000
+
+prod:
+  host: 10.118.31.8
+  port: 9000
