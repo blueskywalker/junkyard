@@ -32,7 +32,7 @@ def eval_exp(tokens, stack):
     return stack
 
 
-if __name__ == '__main__':
+def main():
     stack = []
     while True:
         in_func = input if sys.version_info > (3, 0) else raw_input
@@ -48,3 +48,8 @@ if __name__ == '__main__':
         stack = eval_exp(expr.split(), stack)
         print(stack)
 
+if __name__ == '__main__':
+    stack = []
+    data = '1 2 + 3 4 5 / * +'
+    eval_exp(data.split(), stack)
+    print(stack)

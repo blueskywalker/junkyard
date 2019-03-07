@@ -16,7 +16,7 @@ class BinaryTree(object):
 
     def __init__(self):
         self.root=None
-        
+
     def inorder(self):
         def inorder_helper(node):
             if node is not None:
@@ -36,22 +36,35 @@ class BinaryTree(object):
                 continue
 
             print(item.value)
-            
+
             queue.append(item.left)
             queue.append(item.right)
 
     def zigzag(self):
         stack=[]
-        stack.append(self.root)
+        que = deque()
         
-        while len(stack) > 0:
-            item = stack.pop()
+        que.append(self.root)
+        flag=False
+        que.append( not flag)
+        
+        while len(que) > 0:
+            item = que.popleft()
             if item is None:
                 continue
-            print(item.value)
-            stack.append(item.left)
-            stack.append(item.right)
-
+            
+            if isinstance(item, Node):
+                print(item.value)
+                if not flag:
+                    stack.append(item)
+                else:
+                    que.append(item.left)
+                    que.append(item.right)
+                    
+            else:
+                while len(stack) > 0:
+                    print(stack.pop())
+                que.append(not item)
 def buildTree():
     '''
                 5
