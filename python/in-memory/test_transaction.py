@@ -52,3 +52,5 @@ class TestTransactional(unittest.TestCase):
         self.db.rollback()
         self.assertEqual(1, self.db.count(10))
 
+if __name__ == '__main__':
+    unittest.main()
