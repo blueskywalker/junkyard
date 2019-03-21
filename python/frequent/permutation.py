@@ -13,6 +13,6 @@ def perm(input):
     #        output.append(sub[:i] + pivot + sub[i:])
     #return output
 
-    return [ sub[:i] + pivot + sub[i:] for sub in perm(rest) for i in xrange(len(sub)+1) ]
+    return [ sub[:i] + pivot + sub[i:] for sub in perm(rest) for i in range(len(sub)+1) ]
 
-print perm('abcd')
+print( perm('abcd') )
