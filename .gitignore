@@ -1,8 +1,11 @@
-
 */target/*
 **/*.o
+**/*.pyc
 c++/.metadata
-*.
+**/.idea
+**/.vscode
+**/.mypy_cache
+**/.pytest_cache
 *.
 .project
 c++/first/.settings
