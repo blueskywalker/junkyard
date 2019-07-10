@@ -42,25 +42,21 @@ def trace_char(query, step, location, route):
 
     new_location = ( x + 1, y )
     if x+1 < rows and new_location not in route and board[x+1][y] == query[step+1]:
-        result = trace_char(query, step+1, new_location, route | set([location]))
-        if result:
+        if trace_char(query, step+1, new_location, route | set([location])):
             return True
     new_location = ( x - 1, y )
     if x-1 > -1 and new_location not in route and board[x-1][y] == query[step+1]:
-        result = trace_char(query, step+1, new_location, route | set([location]))
-        if result:
+        if trace_char(query, step+1, new_location, route | set([location])):
             return True
 
     new_location = ( x, y + 1 )
     if y+1 < columns and new_location not in route and board[x][y+1] == query[step+1]:
-        result = trace_char(query, step+1, new_location, route | set([location]))
-        if result:
+        if trace_char(query, step+1, new_location, route | set([location])):
             return True
 
     new_location = ( x, y - 1 )
     if y-1 > -1 and new_location not in route and board[x][y-1] == query[step+1]:
-        result = trace_char(query, step+1, new_location, route | set([location]))
-        if result:
+        if trace_char(query, step+1, new_location, route | set([location])):
             return True
 
     return False
