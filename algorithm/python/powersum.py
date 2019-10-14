@@ -1,14 +1,11 @@
 from __future__ import print_function
 
-counter=0
 
 def powersum(given, power):
-    global counter
-    def executer(start, given, power, trace):
-        global counter
+    def executer(start, given, power, trace, counter):
         if given == 0:
             print(trace)
-            counter += 1
+            counter[0] = counter[0] + 1
             return True
 
         if given < 0:
@@ -17,12 +14,12 @@ def powersum(given, power):
         if pow(start, power) > given:
             return False
 
-        for next in range(start, given+1):
-            minus = pow(next, power)           
-            executer(next+1, given-minus, power, trace + [next])
+        for item in range(start, given+1):
+            minus = pow(item, power)
+            executer(item+1, given-minus, power, trace + [item], counter)
 
-    counter=0
-    executer(1, given, power, [])
+    counter = [0]
+    executer(1, given, power, [], counter)
     return counter
 
 
